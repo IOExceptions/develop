@@ -22,13 +22,19 @@ public class SettingDialog extends JDialog {
     private JRadioButton openRbtn;
     private JTextField workTimeTF;
     private JTextField restTimeTF;
-    private JLabel descJL;
+    private JTextField textField1;
+    /* 超期需求推送开关 */
+    private JRadioButton beyondRequirementsButton;
+    /* 缺陷分配推送开关 */
+    private JRadioButton beyondBugButton;
+    /* 任务完成情况推送开关 */
+    private JRadioButton taskScheduleButton;
 
     public SettingDialog() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-        setTitle("StopCoding Setting");
+        setTitle("DHG插件配置");
         setLocation(400, 200);//距离屏幕左上角的其实位置
         setSize(500, 300);//对话框的长宽
 
@@ -63,6 +69,42 @@ public class SettingDialog extends JDialog {
                 openRbtn.setText(openRbtn.isSelected() ? "Running" : "Stopped");
             }
         });
+        /* 监听超期需求推送开关 */
+        beyondRequirementsButton.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                DataCenter.pushBeyondRequirements = beyondRequirementsButton.isSelected();
+                if(beyondRequirementsButton.isSelected()){
+                    beyondRequirementsButton.setText("打开");
+                }else{
+                    beyondRequirementsButton.setText("关闭");
+                }
+            }
+        });
+        /* 监听缺陷分配推送开关 */
+        beyondBugButton.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                DataCenter.pushBeyondBug = beyondBugButton.isSelected();
+                if(beyondBugButton.isSelected()){
+                    beyondBugButton.setText("打开");
+                }else{
+                    beyondBugButton.setText("关闭");
+                }
+            }
+        });
+        /* 监听任务完成情况推送开关 */
+        taskScheduleButton.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                DataCenter.pushTaskSchedule = taskScheduleButton.isSelected();
+                if(taskScheduleButton.isSelected()){
+                    taskScheduleButton.setText("打开");
+                }else{
+                    taskScheduleButton.setText("关闭");
+                }
+            }
+        });
 
         //初始化渲染设置界面
         SettingData settings = new SettingData();
@@ -72,7 +114,6 @@ public class SettingDialog extends JDialog {
         openRbtn.setSelected(DataCenter.settingData.isOpen());
         workTimeTF.setText(DataCenter.settingData.getWorkTime() + "");
         restTimeTF.setText(DataCenter.settingData.getRestTime() + "");
-        descJL.setText(DataCenter.getSettingDesc());
         openRbtn.setText(openRbtn.isSelected() ? "Running" : "Stopped");
     }
 
@@ -93,11 +134,12 @@ public class SettingDialog extends JDialog {
             //关闭定时
             notifyStr = TimerService.closeTimer();
         }
-        NotificationGroup notificationGroup = new NotificationGroup("StopCoding", NotificationDisplayType.BALLOON, true);
-        Notification notification = notificationGroup.createNotification(notifyStr, MessageType.INFO);
+        /* 设置弹窗提醒设置成功 */
+        NotificationGroup notificationGroup = new NotificationGroup("CRM消息提醒推送开启成功", NotificationDisplayType.BALLOON, true);
+        Notification notification = notificationGroup.createNotification("CRM消息提醒推送开启成功", MessageType.INFO);
         Notifications.Bus.notify(notification);
 
-        JOptionPane.showMessageDialog(null, notifyStr, "tips",JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, notifyStr, "提醒",JOptionPane.INFORMATION_MESSAGE);
         dispose();
     }
 

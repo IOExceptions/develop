@@ -1,5 +1,6 @@
 package com.dongbao.data;
 
+import javax.swing.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Timer;
@@ -17,6 +18,13 @@ public class DataCenter {
 
     public static Timer workTimer = new Timer();
     public static Timer reskTimer = new Timer();
+
+    /* 超期需求推送开关 */
+    public static Boolean pushBeyondRequirements;
+    /* 缺陷分配推送开关 */
+    public static Boolean pushBeyondBug;
+    /* 任务完成情况推送开关 */
+    public static Boolean pushTaskSchedule;
 
     public static int restCountDownSecond = -1;
 
