@@ -1,0 +1,55 @@
+<idea-plugin>
+    <id>com.dongbao.plugin</id>
+    <name>DHGPlugin</name>
+    <vendor email="1450347794@qq.com" url="http://crm.dongbaosoft.com:8092">小码农</vendor>
+
+    <!-- Product and plugin compatibility requirements -->
+    <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <description><![CDATA[
+        <p>CRM超期任务提醒</p>
+        <ol>
+            <li>1.CRM超期任务提醒</li>
+            <li>2.待处理缺陷提醒</li>
+            <li>3.消息提醒</li>
+        </ol>
+        <hr>
+        ]]></description>
+
+    <change-notes><![CDATA[
+        <ul>
+            <li>1、CRM超期任务提醒</li>
+        </ul>
+        ]]>
+    </change-notes>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="com.dongbao.plugin.services.MyApplicationService"/>
+        <projectService serviceImplementation="com.dongbao.plugin.services.MyProjectService"/>
+
+        <preloadingActivity implementation="com.dongbao.StopCodingInitializer"/>
+    </extensions>
+
+    <applicationListeners>
+        <listener class="com.dongbao.plugin.listeners.MyProjectManagerListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+
+    </applicationListeners>
+
+    <extensionPoints>
+
+    </extensionPoints>
+
+    <projectListeners>
+
+    </projectListeners>
+
+    <actions>
+        <action id="StopCoding_setting_id" class="com.dongbao.StopCodingSettingAction"
+                text="配置DHG提醒" description="setting">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl S" second-keystroke="C"/>
+        </action>
+    </actions>
+</idea-plugin>
