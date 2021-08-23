@@ -1,8 +1,9 @@
 package com.dongbao.ui;
 
+import com.dongbao.common.Constant;
 import com.dongbao.data.DataCenter;
 import com.dongbao.data.SettingData;
-import com.dongbao.service.TimerService;
+import com.dongbao.service.ProblemService;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
@@ -19,10 +20,8 @@ public class SettingDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JRadioButton openRbtn;
-    private JTextField workTimeTF;
-    private JTextField restTimeTF;
-    private JTextField textField1;
+    /* crm地址配置输入框 */
+    private JTextField crmUrlField;
     /* 超期需求推送开关 */
     private JRadioButton beyondRequirementsButton;
     /* 缺陷分配推送开关 */
@@ -62,13 +61,7 @@ public class SettingDialog extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        //绑定启用选择按钮时间
-        openRbtn.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                openRbtn.setText(openRbtn.isSelected() ? "Running" : "Stopped");
-            }
-        });
+
         /* 监听超期需求推送开关 */
         beyondRequirementsButton.addChangeListener(new ChangeListener() {
             @Override
@@ -105,16 +98,14 @@ public class SettingDialog extends JDialog {
                 }
             }
         });
+        /* 监听任务完成情况推送开关 */
+        crmUrlField.setText(Constant.url);
 
         //初始化渲染设置界面
         SettingData settings = new SettingData();
         PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
         propertiesComponent.loadFields(settings);
         DataCenter.settingData = settings;
-        openRbtn.setSelected(DataCenter.settingData.isOpen());
-        workTimeTF.setText(DataCenter.settingData.getWorkTime() + "");
-        restTimeTF.setText(DataCenter.settingData.getRestTime() + "");
-        openRbtn.setText(openRbtn.isSelected() ? "Running" : "Stopped");
     }
 
     /**
@@ -122,17 +113,23 @@ public class SettingDialog extends JDialog {
      */
     private void onOK() {
         //保持设置
-        SettingData settings = TimerService.saveSetting(openRbtn.isSelected(), restTimeTF.getText(), workTimeTF.getText());
+        SettingData settings = ProblemService.saveSetting(DataCenter.pushBeyondRequirements,DataCenter.pushBeyondBug,DataCenter.pushTaskSchedule);
         PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
         propertiesComponent.saveFields(settings);
 
         String notifyStr;
-        if (openRbtn.isSelected()) {
-            //开启定时
-            notifyStr = TimerService.openTimer();
-        } else {
-            //关闭定时
-            notifyStr = TimerService.closeTimer();
+//        if (openRbtn.isSelected()) {
+//            //开启定时
+//            notifyStr = TimerService.openTimer();
+//        } else {
+//            //关闭定时
+//            notifyStr = TimerService.closeTimer();
+//        }
+        /* 打开CRM消息提醒 */
+        if(DataCenter.pushBeyondRequirements){
+            notifyStr = ProblemService.openTimer();
+        }else{
+            notifyStr = ProblemService.closeTimer();
         }
         /* 设置弹窗提醒设置成功 */
         NotificationGroup notificationGroup = new NotificationGroup("CRM消息提醒推送开启成功", NotificationDisplayType.BALLOON, true);
@@ -140,6 +137,7 @@ public class SettingDialog extends JDialog {
         Notifications.Bus.notify(notification);
 
         JOptionPane.showMessageDialog(null, notifyStr, "提醒",JOptionPane.INFORMATION_MESSAGE);
+        /* 隐藏窗口 */
         dispose();
     }
 

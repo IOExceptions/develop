@@ -1,12 +1,8 @@
 package com.dongbao.ui;
 
-import com.dongbao.data.DataCenter;
-import com.dongbao.task.RestTask;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.Date;
-import java.util.Timer;
 
 public class TipsDialog extends JDialog {
     private JPanel contentPane;
@@ -38,8 +34,8 @@ public class TipsDialog extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        DataCenter.reskTimer = new Timer();
-        DataCenter.reskTimer.schedule(new RestTask(this), new Date(), 1000);
+//        DataCenter.reskTimer = new Timer();
+//        DataCenter.reskTimer.schedule(new RestTask(this), new Date(), 1000);
     }
 
     private void onOK() {
