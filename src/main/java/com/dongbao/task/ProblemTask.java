@@ -1,5 +1,7 @@
 package com.dongbao.task;
 
+import com.dongbao.common.Constant;
+import com.dongbao.service.ProblemService;
 import com.dongbao.ui.ProblemTipDialog;
 import com.dongbao.util.HttpClientUtil;
 import com.intellij.notification.Notification;
@@ -14,6 +16,9 @@ import java.util.TimerTask;
 
 public class ProblemTask  extends TimerTask{
 
+    /**
+     * 查询超期需求url
+     * */
     public static final String REQUEST_ADDRESS="/crmProjectProblems/queryStaleDated";
 
     /**
@@ -36,8 +41,15 @@ public class ProblemTask  extends TimerTask{
         Map<String, Object> params=new HashMap<String, Object>();
         params.put("name","wangzhikun");
         try {
-            String result = httpClientUtil.doPost(REQUEST_ADDRESS, params);
+            Map<String, String> header=new HashMap<>();
+            header.put("Content-Type","application/json");
+            header.put("User-Agent","PostmanRuntime/7.28.4");
+            header.put("UAccept-Encoding","gzip, deflate, br");
+            header.put("UConnection","keep-alive");
+            String result = httpClientUtil.doPostJson(Constant.url+REQUEST_ADDRESS, params,header);
             System.out.println("获取成功");
+            /* 调用解析超期需求提醒的方法 */
+            ProblemService.nalysisStaleDated(result);
         } catch (Exception e) {
             e.printStackTrace();
         }

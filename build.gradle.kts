@@ -28,6 +28,8 @@ repositories {
     mavenCentral()
 }
 dependencies {
+    implementation("com.alibaba:fastjson:1.2.78")
+    implementation("org.projectlombok:lombok:1.18.20")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.17.1")
 }
 
