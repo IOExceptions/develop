@@ -1,7 +1,10 @@
 package com.dongbao.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class Problem implements Serializable {
 
     /**
